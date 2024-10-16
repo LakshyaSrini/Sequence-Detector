@@ -167,7 +167,7 @@ endmodule
 
 ![mealy](https://github.com/user-attachments/assets/af172726-c73b-447d-91a4-1b25e96242a9)
 
-Testbench for Sequence Detector (Moore and Mealy FSMs)
+Testbench for Sequence Detector (Moore FSMs)
 
 // sequence_detector_tb.v
 `timescale 1ns / 1ps
@@ -226,6 +226,62 @@ end
 endmodule
 
 ![Screenshot 2024-10-15 173554](https://github.com/user-attachments/assets/0d8088bd-58f2-4b67-992c-76061041acc8)
+
+Testbench for Sequence Detector (Mealy FSMs)
+
+module mealy_seq_detector_tb;
+reg clk;
+  reg reset;
+  reg seq_in;
+
+  // Outputs
+  wire detected;
+
+  // Instantiate the module under test
+  mealy_seq_detector dut (
+    .clk(clk),
+    .reset(reset),
+    .seq_in(seq_in),
+    .detected(detected)
+  );
+
+  // Clock generation
+  always #5 clk = ~clk;
+
+  // Testbench code
+  initial begin
+    // Initialize inputs
+    clk = 0;
+    reset = 1;
+    seq_in = 0;
+
+    // Reset the module
+    #10 reset = 0;
+
+    // Test case 1: Detect sequence "101"
+    #10 seq_in = 1;
+    #10 seq_in = 0;
+    #10 seq_in = 1;
+    #10 $display("Sequence 101 detected: %b", detected);
+
+    // Test case 2: No sequence detected
+    #10 seq_in = 0;
+    #10 seq_in = 1;
+    #10 seq_in = 0;
+    #10 $display("No sequence detected: %b", detected);
+
+    // Test case 3: Sequence partially detected
+    #10 seq_in = 1;
+    #10 seq_in = 0;
+    #10 seq_in = 0;
+    #10 $display("Sequence partially detected: %b", detected);
+
+    // Finish the simulation
+    #10 $finish;
+  end
+endmodule
+
+![Screenshot 2024-10-16 183459](https://github.com/user-attachments/assets/70b5878f-43ae-4858-b76a-525c32aa01ae)
 
 
 Conclusion
